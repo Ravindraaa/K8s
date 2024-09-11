@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: prod
+  template:
+    metadata:
+      name: wpod
+      labels: 
+        env: prod  # Should match the selector
+    spec:
+      volumes:
+      - name: mypod-pvc
+        persistentVolumeClaim:
+          claimName: mypvc  # Name of the PVC to use
+
+      containers:  # Correct: 'containers' not 'container'
+      - name: webc1
+        image: vimal13/apache-webserver-php
+        volumeMounts:
+         - mountPath: /var/www/html
+           name: mypod-pvc  # Mount the PVC inside the container
